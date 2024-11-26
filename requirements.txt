@@ -1,0 +1,11 @@
+jupyter-book
+matplotlib
+numpy
+pandas
+scipy
+scikit-learn
+statsmodels
+beautifulsoup4
+cvxpy
+mplfinance
+yfinance

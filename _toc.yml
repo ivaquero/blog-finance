@@ -1,0 +1,14 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: README
+parts:
+  - caption: Fundamentals
+    chapters:
+      - file: b01-intro
+      - file: b02-linearity
+      - file: b03-nonlinearity
+      - file: b04-options
+      - file: b05-interest
+      - file: b06-analysis
