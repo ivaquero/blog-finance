@@ -8,4 +8,5 @@ statsmodels
 beautifulsoup4
 cvxpy
 mplfinance
+nasdaq-data-link
 yfinance
