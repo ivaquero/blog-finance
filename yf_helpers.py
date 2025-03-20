@@ -9,7 +9,7 @@ import requests
 import yfinance as yf
 from bs4 import BeautifulSoup
 
-ssl._create_default_https_context = ssl._create_unverified_context
+ssl._create_default_https_context = ssl.create_default_context()
 
 
 def yf_filename(ticker, start, end):
@@ -26,7 +26,7 @@ def yf_filename(ticker, start, end):
 def yf_downloader(ticker, start="-10y", end="now"):
     date_format = "%Y-%m-%d"
     # get datetime strings
-    end = datetime.now().strftime(date_format) if end == "now" else end
+    end = datetime.now(tz=datetime.UTC).strftime(date_format) if end == "now" else end
     if start.startswith("-"):
         endd = end.split("-")
         if start.endswith("y"):
@@ -106,7 +106,7 @@ def get_dax30_indeces():
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
     }
     symbols = []
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, timeout=10)
     if response.status_code == 404:
         print("Data not taken")
     elif response.status_code == 200:
@@ -127,7 +127,7 @@ def get_dax30_indeces():
 
 def get_ff_research_data():
     url_zip_file = "https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp/F-F_Research_Data_Factors_CSV.zip"
-    response = requests.get(url_zip_file)
+    response = requests.get(url_zip_file, timeout=10)
     if response.status_code == 200:
         with zipfile.ZipFile(io.BytesIO(response.content)) as z:
             file_name = z.namelist()[0]
