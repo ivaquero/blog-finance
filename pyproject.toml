@@ -40,7 +40,6 @@
         "I",    # import sorting
         "ISC",  # string concatenation
         "NPY",  # numpy specific rules
-        "PD",   # pandas-vet
         "PERF", # perflint
         "RUF",  # ruff
         "S",    # security
