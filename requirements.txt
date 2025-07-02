@@ -6,6 +6,5 @@ scipy
 scikit-learn
 beautifulsoup4
 cvxpy
-mplfinance
 nasdaq-data-link
 yfinance
