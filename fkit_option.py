@@ -276,10 +276,12 @@ class TrinomialTreeOption(BinomialTreeOption):
 
         for _ in range(self.N):
             prev_nodes = self.STs[-1]
-            self.ST = np.concatenate((
-                prev_nodes * self.u,
-                [prev_nodes[-1] * self.m, prev_nodes[-1] * self.d],
-            ))
+            self.ST = np.concatenate(
+                (
+                    prev_nodes * self.u,
+                    [prev_nodes[-1] * self.m, prev_nodes[-1] * self.d],
+                )
+            )
             self.STs.append(self.ST)
 
     def traverse_tree(self, payoffs):

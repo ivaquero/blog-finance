@@ -2,8 +2,7 @@ import itertools
 import math
 
 import numpy as np
-from scipy import optimize
-from scipy import stats
+from scipy import optimize, stats
 
 
 def zero_coupon_bond(face_val, year_yield, time):
