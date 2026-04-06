@@ -9,7 +9,7 @@ import requests
 import yfinance as yf
 from bs4 import BeautifulSoup
 
-ssl._create_default_https_context = ssl.create_default_context()
+ssl._create_default_https_context = ssl.create_default_context()  # ty:ignore[invalid-assignment]
 
 
 def yf_filename(ticker, start, end):
@@ -34,7 +34,7 @@ def yf_downloader(ticker, start="-10y", end="now"):
         elif start.endswith("m"):
             start = f"{endd[0]}-{int(endd[1]) + int(start[:-1])}-{endd[2]}"
         elif start.endswith("d"):
-            start = f"{endd[0]}-{endd[1]}-{int(endd[2]) + {int(start[:-1])}}"
+            start = f"{endd[0]}-{endd[1]}-{int(endd[2]) + int(start[:-1])}"
         else:
             raise ValueError("Invalid start date format")
     else:
