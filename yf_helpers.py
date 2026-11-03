@@ -2,14 +2,17 @@ import io
 import os
 import ssl
 import zipfile
-from datetime import datetime
+from datetime import UTC, datetime
 
 import pandas as pd
 import requests
 import yfinance as yf
 from bs4 import BeautifulSoup
 
-ssl._create_default_https_context = ssl.create_default_context()  # ty:ignore[invalid-assignment]
+# Some environments (e.g. missing CA bundles) fail cert verification for
+# urllib-based fetches such as pandas.read_excel(url). Assign the factory
+# function itself (NOT the result of calling it), since urllib CALLS this hook.
+ssl._create_default_https_context = ssl._create_unverified_context  # ty:ignore[invalid-assignment]
 
 
 def yf_filename(ticker, start, end):
@@ -26,7 +29,7 @@ def yf_filename(ticker, start, end):
 def yf_downloader(ticker, start="-10y", end="now"):
     date_format = "%Y-%m-%d"
     # get datetime strings
-    end = datetime.now(tz=datetime.UTC).strftime(date_format) if end == "now" else end
+    end = datetime.now(tz=UTC).strftime(date_format) if end == "now" else end
     if start.startswith("-"):
         endd = end.split("-")
         if start.endswith("y"):
@@ -37,8 +40,6 @@ def yf_downloader(ticker, start="-10y", end="now"):
             start = f"{endd[0]}-{endd[1]}-{int(endd[2]) + int(start[:-1])}"
         else:
             raise ValueError("Invalid start date format")
-    else:
-        start = start
 
     filename = yf_filename(ticker, start, end)
     if not os.path.exists(filename):
@@ -90,13 +91,32 @@ def calc_all_returns(fdata_df):
     )
 
 
-def get_dow_jones_indeces():
+DOW_CONSTITUENTS_FILE = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "data", "dow_jones_constituents.csv"
+)
+
+
+def get_dow_jones_indeces(refresh=False):
+    """
+    Return the list of Dow Jones (DIA) constituents.
+
+    By default it reads the *pinned* list committed in
+    ``data/dow_jones_constituents.csv`` so builds are offline and
+    reproducible (the real index composition changes over time). Pass
+    ``refresh=True`` to scrape the live SSGA holdings and rewrite the
+    pinned file.
+    """
+    if not refresh:
+        return pd.read_csv(DOW_CONSTITUENTS_FILE, dtype=str)["symbol"].dropna().tolist()
+
     url = (
         "https://www.ssga.com/us/en/institutional/etfs/library-content/"
         "products/fund-data/etfs/us/holdings-daily-us-en-dia.xlsx"
     )
-
-    return pd.read_excel(url, skiprows=4, nrows=30).get("Ticker").tolist()
+    tickers = pd.read_excel(url, skiprows=4, nrows=30).get("Ticker").dropna().tolist()
+    # Refresh the committed cache so future builds are deterministic again.
+    pd.DataFrame({"symbol": tickers}).to_csv(DOW_CONSTITUENTS_FILE, index=False)
+    return tickers
 
 
 def get_dax30_indeces():
@@ -112,7 +132,11 @@ def get_dax30_indeces():
     elif response.status_code == 200:
         soup = BeautifulSoup(response.text, "html.parser")
         div = soup.find("div", class_="Ovx(a) W(100%)")
-        table = div.find("table", class_="W(100%) M(0) BdB Bdc($seperatorColor)")
+        table = (
+            div.find("table", class_="W(100%) M(0) BdB Bdc($seperatorColor)")
+            if div is not None
+            else None
+        )
         if table:
             for row in table.find_all("tr"):
                 cells = row.find_all("td", class_="Py(10px) Ta(start) Pend(10px)")

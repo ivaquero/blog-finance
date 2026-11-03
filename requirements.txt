@@ -6,6 +6,7 @@ scipy
 scikit-learn
 beautifulsoup4
 cvxpy
+openpyxl
 nasdaq-data-link
 yfinance
 plotly
