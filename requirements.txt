@@ -1,4 +1,11 @@
-jupyter-book<2
+# Build
+jupyter-book>=2.0.0
+
+# Execution (only needed for `jupyter book build --html --execute`)
+jupyter-server
+ipykernel
+
+# Notebook dependencies
 matplotlib
 numpy
 pandas
@@ -10,3 +17,4 @@ openpyxl
 nasdaq-data-link
 yfinance
 plotly
+requests

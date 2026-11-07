@@ -1,54 +1,67 @@
 name: deploy-book
 
-# Run this when the master or main branch changes
+# Build the Jupyter Book 2 site and publish it to GitHub Pages
 on:
   push:
     branches:
       - master
       - main
-    # If your Git repository has the Jupyter Book within some-subfolder next to
-    # unrelated files, you can make this run only if a file within that specific
-    # folder has been modified.
-    #
-    # paths:
-    # - some-subfolder/**
+  workflow_dispatch:
 
-# This job installs dependencies, builds the book, and pushes it to `gh-pages`
+env:
+  # The site is served from https://<org>.github.io/<repo>/, so every asset
+  # URL must be prefixed with the repository name.
+  BASE_URL: /${{ github.event.repository.name }}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued in between
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   deploy-book:
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7
 
-      # Install dependencies
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
-          python-version: 3.14
+          python-version: "3.14"
 
-      - name: Install dependencies
+      # Jupyter Book 2 runs on the MyST Document Engine (Node.js)
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Jupyter Book
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          pip install "jupyter-book>=2.0.0"
 
-      # Build the book
+      # Notebook execution is disabled by default: the build reuses the
+      # outputs stored in the .ipynb files. Add --execute (and install
+      # requirements.txt) to recompute them here.
       - name: Build the book
-        run: |
-          jupyter-book build .
+        run: jupyter book build --html --ci
 
       - name: Setup Pages
         uses: actions/configure-pages@v6
 
-      # Upload the book's HTML as an artifact
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: "./_build/html"
+          path: ./_build/html
 
-      # Deploy the book's HTML to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

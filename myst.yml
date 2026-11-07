@@ -1,14 +1,17 @@
 version: 1
+
 project:
+  id: 40af69d4-d60b-4fc3-a6b3-f3a95de68c15
   title: Blog-Finance
+  copyright: "2023"
   authors:
-    - name: ivaquero
-  copyright: '2023'
+    - name:
+        literal: ivaquero
   exclude:
     - _build
     - Thumbs.db
     - .DS_Store
-    - '**.ipynb_checkpoints'
+    - "**.ipynb_checkpoints"
   toc:
     - file: README.md
     - title: Fundamentals
@@ -19,9 +22,10 @@ project:
         - file: b04-options.ipynb
         - file: b05-interest.ipynb
         - file: b06-analysis.ipynb
+
 site:
+  template: book-theme
   options:
     logo: doge.png
     favicon: doge.png
     folders: true
-  template: book-theme

@@ -32,4 +32,5 @@ __pycache__
 
 _build
 articles
+.workbuddy
 test.*
