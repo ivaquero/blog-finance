@@ -30,6 +30,6 @@ ipython_config.py
 __pycache__
 *.pyc
 
-.obsidian
+_build
 articles
 test.*

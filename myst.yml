@@ -1,0 +1,27 @@
+version: 1
+project:
+  title: Blog-Finance
+  authors:
+    - name: ivaquero
+  copyright: '2023'
+  exclude:
+    - _build
+    - Thumbs.db
+    - .DS_Store
+    - '**.ipynb_checkpoints'
+  toc:
+    - file: README.md
+    - title: Fundamentals
+      children:
+        - file: b01-intro.ipynb
+        - file: b02-linearity.ipynb
+        - file: b03-nonlinearity.ipynb
+        - file: b04-options.ipynb
+        - file: b05-interest.ipynb
+        - file: b06-analysis.ipynb
+site:
+  options:
+    logo: doge.png
+    favicon: doge.png
+    folders: true
+  template: book-theme
