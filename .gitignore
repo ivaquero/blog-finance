@@ -27,8 +27,11 @@ profile_default/
 ipython_config.py
 
 # python
+.venv
 __pycache__
 *.pyc
+# uv.lock 内嵌 ustc 镜像地址，提交后境外 CI 无法解析
+uv.lock
 
 _build
 articles
