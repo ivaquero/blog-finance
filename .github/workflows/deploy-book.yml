@@ -47,7 +47,7 @@ jobs:
 
       # Jupyter Book 2 runs on the MyST Document Engine (Node.js)
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "22"
 
